@@ -1,0 +1,57 @@
+Title: CSRF PoC for Exploiting Reflected XSS
+
+Slide 1: Chaining CSRF and Reflected Cross-Site Scripting
+A reflected XSS vulnerability can become exploitable against another user only iif:
+Cross-site requests are accepted.
+Authentication cookies accompany the request.
+The endpoint lacks proper CSRF protection.
+Browser SameSite policy allows cookies to be included.
+If any of these conditions fail—for example, cookies are blocked by SameSite=Strict or a CSRF token is required—the attack chain may not succeed.
+
+Slide 2: Reflected XSS: Why It Is Usually Not Directly Exploitable
+The malicious payload is not stored on the server; it is returned only in response to the specific request that contains it.
+Flow:
+
+Unlike Stored XSS, the payload exists only for the lifetime of a single request and is not persisted on the server. This means:
+The attacker cannot cause arbitrary users to execute the payload automatically.
+Every victim must be induced to send a specially crafted request (such as by clicking a malicious link or submitting a crafted form).
+NOTE: This is reportable for a PAA application under Insufficient output encoding
+
+Slide 3: Attack Chain
+Attacker Website
+        │
+        │ Auto Submit Form
+        ▼
+Victim Browser
+        │
+        │ Cookies Included
+        ▼
+Target Application
+        │
+        │ Reflects Payload
+        ▼
+Victim Browser
+        │
+        ▼
+Reflected XSS Executes
+
+Slide 4 – SameSite Cookies
+SameSite is a cookie attribute designed to reduce the risk of CSRF.
+It controls when browsers include cookies on cross-site requests.
+Example:
+Set-Cookie:
+SESSION=abc123;
+SameSite=Lax
+SameSite Modes
+SameSite
+Cookies Sent?
+Strict
+Only same-site requests
+Lax
+Same-site + some top-level navigation requests
+None
+All requests (must also use Secure)
+
+Slide 5: How does changing request method help?
+
+
